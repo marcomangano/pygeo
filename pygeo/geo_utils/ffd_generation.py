@@ -227,9 +227,12 @@ def createFittedWingFFD(surf, surfFormat, outFile, leList, teList, nSpan, nChord
     # Set the triangulated surface in DVCon
     DVCon = DVConstraints()
     DVCon.setSurface(surf, surfFormat=surfFormat)
+    srf = DVCon._getSurfaceVertices(surfaceName="default")
 
     # Get the surface intersections; surfCoords has dimensions [nSpanTotal, nChord, 2, 3]
-    surfCoords = DVCon._generateIntersections(leList, teList, nSpan, nChord, surfaceName="default")
+    from .cosineSpacing import getCosineIntersections
+
+    surfCoords = getCosineIntersections(srf, leList, teList, nSpan, nChord)
 
     nSpanTotal = np.sum(nSpan)
 
