@@ -54,11 +54,19 @@ def getCosineIntersections(surf, leList, teList, nSpan, nChord):
             te_span_s = np.append(
                 te_span_s, np.linspace(te_breakPoints[i], te_breakPoints[i + 1], nSpan[i], endpoint=endpoint)
             )
-    else:
-        raise TypeError("nSpan must be either an int or a list.")
+        # Get the total number of spanwise sections
+        nSpanTotal = np.sum(nSpan)
 
-    # Get the total number of spanwise sections
-    nSpanTotal = np.sum(nSpan)
+    elif not nSpan:
+        if len(leList) != len(teList):
+            raise ValueError("leList and teList must be the same length if they define the exact projection location")
+        le_span_s = le_s.projectPoint(leList)[0]
+        te_span_s = te_s.projectPoint(teList)[0]
+        # Get the total number of spanwise sections
+        nSpanTotal = len(le_span_s)
+
+    else:
+        raise ValueError("nSpan must be either None, int, or list")
 
     # Generate a 2D region of intersections based on cosine spacing
 

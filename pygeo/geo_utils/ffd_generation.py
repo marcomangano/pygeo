@@ -223,6 +223,7 @@ def createFittedWingFFD(surf, surfFormat, outFile, leList, teList, nSpan, nChord
     # Import inside this function to avoid circular imports
     # First party modules
     from pygeo import DVConstraints
+    from .cosineSpacing import getCosineIntersections
 
     # Set the triangulated surface in DVCon
     DVCon = DVConstraints()
@@ -230,11 +231,12 @@ def createFittedWingFFD(surf, surfFormat, outFile, leList, teList, nSpan, nChord
     srf = DVCon._getSurfaceVertices(surfaceName="default")
 
     # Get the surface intersections; surfCoords has dimensions [nSpanTotal, nChord, 2, 3]
-    from .cosineSpacing import getCosineIntersections
-
     surfCoords = getCosineIntersections(srf, leList, teList, nSpan, nChord)
 
-    nSpanTotal = np.sum(nSpan)
+    if nSpan:
+        nSpanTotal = np.sum(nSpan)
+    else:
+        nSpanTotal = len(leList)
 
     # Initialize FFD coordinates to the surface coordinates
     FFDCoords = surfCoords.copy()
