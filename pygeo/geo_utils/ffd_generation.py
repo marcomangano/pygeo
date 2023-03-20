@@ -159,7 +159,9 @@ def write_wing_FFD_file(fileName, slices, N0, N1, N2, axes=None, dist=None):
     f.close()
 
 
-def createFittedWingFFD(surf, surfFormat, outFile, leList, teList, nSpan, nChord, absMargins, relMargins, liftIndex):
+def createFittedWingFFD(
+    surf, surfFormat, outFile, leList, teList, nSpan, nChord, absMargins, relMargins, liftIndex, writeFile=True
+):
     """
     Generates a wing FFD with chordwise points that follow the airfoil geometry.
 
@@ -291,14 +293,17 @@ def createFittedWingFFD(surf, surfFormat, outFile, leList, teList, nSpan, nChord
     upperSurface += thickness * relMargins[2] + absMargins[2]
     lowerSurface -= thickness * relMargins[2] + absMargins[2]
 
-    # Write FFD file
-    f = open(outFile, "w")
-    f.write("1\n")
-    f.write(f"{Nx} {Ny} {Nz}\n")
-    for ell in range(3):
-        for k in range(Nz):
-            for j in range(Ny):
-                for i in range(Nx):
-                    f.write("%.15f " % (FFDCoords[i, j, k, ell]))
-                f.write("\n")
-    f.close()
+    if writeFile:
+        # Write FFD file
+        f = open(outFile, "w")
+        f.write("1\n")
+        f.write(f"{Nx} {Ny} {Nz}\n")
+        for ell in range(3):
+            for k in range(Nz):
+                for j in range(Ny):
+                    for i in range(Nx):
+                        f.write("%.15f " % (FFDCoords[i, j, k, ell]))
+                    f.write("\n")
+        f.close()
+
+    return FFDCoords
