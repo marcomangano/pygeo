@@ -160,7 +160,18 @@ def write_wing_FFD_file(fileName, slices, N0, N1, N2, axes=None, dist=None):
 
 
 def createFittedWingFFD(
-    surf, surfFormat, outFile, leList, teList, nSpan, nChord, absMargins, relMargins, liftIndex, writeFile=True
+    surf,
+    surfFormat,
+    outFile,
+    leList,
+    teList,
+    nSpan,
+    nChord,
+    absMargins,
+    relMargins,
+    liftIndex,
+    writeFile=True,
+    apply_offsets=["root", "tip"],
 ):
     """
     Generates a wing FFD with chordwise points that follow the airfoil geometry.
@@ -208,6 +219,10 @@ def createFittedWingFFD(
         Index specifying which direction lift is in (same as the ADflow option).
         Either 2 for the y-axis or 3 for the z-axis.
         This is used to determine the wing's spanwise direction.
+
+    writeFile : bool
+
+    offsets : list
 
     Examples
     --------
@@ -286,8 +301,12 @@ def createFittedWingFFD(
     trailingEdge += chordLength * relMargins[0] + absMargins[0]
 
     span = np.max(tip - root)
-    root -= span * relMargins[1] + absMargins[1]
-    tip += span * relMargins[1] + absMargins[1]
+    if "root" in apply_offsets:
+        print("moving root")
+        root -= span * relMargins[1] + absMargins[1]
+    if "tip" in apply_offsets:
+        print("moving tip")
+        tip += span * relMargins[1] + absMargins[1]
 
     thickness = upperSurface - lowerSurface
     upperSurface += thickness * relMargins[2] + absMargins[2]
